@@ -1,5 +1,5 @@
 import { Navbar, Nav, Container, NavDropdown, Badge } from 'react-bootstrap';
-import { FaShoppingCart, FaUser } from 'react-icons/fa';
+import { FaShoppingCart, FaUser, FaHeart } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLogoutMutation } from '../slices/usersApiSlice';
@@ -21,8 +21,6 @@ const Header = () => {
     try {
       await logoutApiCall().unwrap();
       dispatch(logout());
-      // NOTE: here we need to reset cart state for when a user logs out so the next
-      // user doesn't inherit the previous users cart and shipping
       dispatch(resetCart());
       navigate('/login');
     } catch (err) {
@@ -38,10 +36,13 @@ const Header = () => {
             <img src={logo} alt='ProShop' />
             ProShop
           </Navbar.Brand>
+
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='ms-auto'>
               <SearchBox />
+
+              {/* 🛒 CART */}
               <Nav.Link as={Link} to='/cart'>
                 <FaShoppingCart /> Cart
                 {cartItems.length > 0 && (
@@ -50,6 +51,13 @@ const Header = () => {
                   </Badge>
                 )}
               </Nav.Link>
+
+              {/* ❤️ WISHLIST (🔥 ADDED) */}
+              <Nav.Link as={Link} to='/wishlist'>
+                <FaHeart /> Wishlist
+              </Nav.Link>
+
+              {/* 👤 USER */}
               {userInfo ? (
                 <>
                   <NavDropdown title={userInfo.name} id='username'>
@@ -67,7 +75,7 @@ const Header = () => {
                 </Nav.Link>
               )}
 
-              {/* Admin Links */}
+              {/* 🛠 ADMIN */}
               {userInfo && userInfo.isAdmin && (
                 <NavDropdown title='Admin' id='adminmenu'>
                   <NavDropdown.Item as={Link} to='/admin/productlist'>

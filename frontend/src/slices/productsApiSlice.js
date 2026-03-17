@@ -3,20 +3,29 @@ import { apiSlice } from './apiSlice';
 
 export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    
+    // ✅ UPDATED (IMPORTANT)
     getProducts: builder.query({
-      query: ({ keyword, pageNumber }) => ({
+      query: ({ keyword, pageNumber, minPrice, maxPrice }) => ({
         url: PRODUCTS_URL,
-        params: { keyword, pageNumber },
+        params: {
+          keyword,
+          pageNumber,
+          minPrice,
+          maxPrice,
+        },
       }),
       keepUnusedDataFor: 5,
       providesTags: ['Products'],
     }),
+
     getProductDetails: builder.query({
       query: (productId) => ({
         url: `${PRODUCTS_URL}/${productId}`,
       }),
       keepUnusedDataFor: 5,
     }),
+
     createProduct: builder.mutation({
       query: () => ({
         url: `${PRODUCTS_URL}`,
@@ -24,6 +33,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Product'],
     }),
+
     updateProduct: builder.mutation({
       query: (data) => ({
         url: `${PRODUCTS_URL}/${data.productId}`,
@@ -32,6 +42,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Products'],
     }),
+
     uploadProductImage: builder.mutation({
       query: (data) => ({
         url: `/api/upload`,
@@ -39,6 +50,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+
     deleteProduct: builder.mutation({
       query: (productId) => ({
         url: `${PRODUCTS_URL}/${productId}`,
@@ -46,6 +58,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ['Product'],
     }),
+
     createReview: builder.mutation({
       query: (data) => ({
         url: `${PRODUCTS_URL}/${data.productId}/reviews`,
@@ -54,6 +67,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Product'],
     }),
+
     getTopProducts: builder.query({
       query: () => `${PRODUCTS_URL}/top`,
       keepUnusedDataFor: 5,

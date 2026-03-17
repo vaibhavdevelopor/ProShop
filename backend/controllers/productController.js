@@ -16,9 +16,25 @@ const getProducts = asyncHandler(async (req, res) => {
         },
       }
     : {};
+  
+  const priceFilter =
+  req.query.minPrice && req.query.maxPrice
+    ? {
+        price: {
+          $gte: Number(req.query.minPrice),
+          $lte: Number(req.query.maxPrice),
+        },
+      }
+    : {};
 
-  const count = await Product.countDocuments({ ...keyword });
-  const products = await Product.find({ ...keyword })
+  const count = await Product.countDocuments({ 
+    ...keyword,
+    ...priceFilter,
+   });
+  const products = await Product.find({
+     ...keyword,
+     ...priceFilter,
+    })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 

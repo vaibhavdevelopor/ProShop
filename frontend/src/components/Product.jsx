@@ -3,6 +3,22 @@ import { Link } from 'react-router-dom';
 import Rating from './Rating';
 
 const Product = ({ product }) => {
+
+  // ❤️ Wishlist function
+  const addToWishlist = (product) => {
+    const existing = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+    const alreadyExists = existing.find((item) => item._id === product._id);
+
+    if (!alreadyExists) {
+      existing.push(product);
+      localStorage.setItem('wishlist', JSON.stringify(existing));
+      alert('Added to wishlist ❤️');
+    } else {
+      alert('Already in wishlist');
+    }
+  };
+
   return (
     <Card className='my-3 p-3 rounded'>
       <Link to={`/product/${product._id}`}>
@@ -24,6 +40,21 @@ const Product = ({ product }) => {
         </Card.Text>
 
         <Card.Text as='h3'>${product.price}</Card.Text>
+
+        {/* ❤️ Wishlist Button */}
+        <button
+          onClick={() => addToWishlist(product)}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'red',
+            cursor: 'pointer',
+            fontSize: '18px',
+          }}
+        >
+          ❤️ Add to Wishlist
+        </button>
+
       </Card.Body>
     </Card>
   );
